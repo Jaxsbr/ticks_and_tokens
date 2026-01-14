@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Ticks and Tokens</title>
+    <style>
+        :root {
+            color-scheme: light;
+            --color-background: #f8fafc;
+            --color-primary: #3b82f6;
+            --color-primary-hover: #2563eb;
+            --color-secondary: #64748b;
+            --color-success: #10b981;
+            --color-warning: #f59e0b;
+            --color-text: #1e293b;
+            --color-text-light: #64748b;
+            --color-border: #e2e8f0;
+            --font-primary: "Inter", "Segoe UI", -apple-system, BlinkMacSystemFont,
+                "Helvetica Neue", sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-primary);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        .dashboard {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .child-panel {
+            flex: 1;
+            border-right: 2px solid var(--color-border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto; /* Allow scrolling if many tasks */
+        }
+
+        .child-panel:last-child {
+            border-right: none;
+        }
+
+        .child-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: var(--color-primary);
+            color: white;
+            border-radius: 8px;
+        }
+
+        .child-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            font-size: 18px;
+        }
+
+        /* Task grid will be added here */
+
+        /* Task grid styling */
+        .task-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid var(--color-border);
+        }
+
+        .task-name {
+            flex: 1;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+
+        .day-buttons {
+            display: flex;
+            gap: 2px;
+        }
+
+        .day-button {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--color-border);
+            background: white;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .day-button:hover {
+            border-color: var(--color-primary);
+        }
+
+        .day-button.completed {
+            background: var(--color-success);
+            border-color: var(--color-success);
+            color: white;
+        }
+
+        .day-button.extra {
+            background: var(--color-warning);
+            border-color: var(--color-warning);
+        }
+
+        /* Control buttons */
+        .controls {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--color-border);
+        }
+
+        .control-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+        }
+
+        .btn-secondary {
+            background: var(--color-secondary);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--color-success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--color-warning);
+            color: white;
+        }
+
+        /* Animation canvas for celebrations */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="child-panel" id="child1-panel">
+            <div class="child-header">
+                <div class="child-name" id="child1-name">Child 1</div>
+                <div class="stats">
+                    <span>Score: <span id="child1-score">0</span></span>
+                    <span>Tokens: <span id="child1-tokens">7</span>/7</span>
+                </div>
+            </div>
+
+            <div class="task-grid" id="child1-tasks">
+                <!-- Task rows will be dynamically generated here -->
+            </div>
+
+            <div class="controls">
+                <div class="control-buttons">
+                    <button class="btn btn-success" id="child1-calculate">Calculate Score</button>
+                    <button class="btn btn-warning" id="child1-deduct">Deduct Token</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="child-panel" id="child2-panel">
+            <div class="child-header">
+                <div class="child-name" id="child2-name">Child 2</div>
+                <div class="stats">
+                    <span>Score: <span id="child2-score">0</span></span>
+                    <span>Tokens: <span id="child2-tokens">7</span>/7</span>
+                </div>
+            </div>
+
+            <div class="task-grid" id="child2-tasks">
+                <!-- Task rows will be dynamically generated here -->
+            </div>
+
+            <div class="controls">
+                <div class="control-buttons">
+                    <button class="btn btn-success" id="child2-calculate">Calculate Score</button>
+                    <button class="btn btn-warning" id="child2-deduct">Deduct Token</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global controls -->
+    <div class="global-controls" style="padding: 20px; background: var(--color-background); border-top: 2px solid var(--color-border); display: flex; justify-content: center; gap: 20px;">
+        <button class="btn btn-primary" id="start-week">Start New Week</button>
+        <button class="btn btn-secondary" id="view-history">View History</button>
+        <button class="btn btn-secondary" id="edit-config">Edit Configuration</button>
+    </div>
+
+    <!-- Canvas for animations (fireworks, celebrations) -->
+    <canvas id="canvas"></canvas>
+
+    <script src="src/main.js"></script>
+</body>
+
+</html>
