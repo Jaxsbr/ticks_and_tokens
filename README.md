@@ -2,6 +2,8 @@
 
 A digital dashboard for tracking kids' weekly tasks and managing screen time tokens. Replaces paper-based task sheets with an interactive display suitable for wall-mounting on a 23" screen.
 
+![Ticks and Tokens Dashboard](screenshot.png)
+
 ## Features
 
 - **Dual Dashboard**: Side-by-side view of both children's progress
